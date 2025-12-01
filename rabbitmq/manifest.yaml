@@ -37,7 +37,7 @@ spec:
     Project: roboshop
     component: rabbitmq
     tier: db
-  port:
+  ports:
   - protocol: TCP
     port: 5672
     targetPort: 5672

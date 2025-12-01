@@ -37,7 +37,7 @@ spec:
       containers:
       - name: catalogue
         image: akhilln/catalogue:v1
-        imagePullPolicy: always
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080
         envFrom:

@@ -1,0 +1,9 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  labels:
+    Project: roboshop
+    component: redis
+    tier: db 
+  namespace: roboshop

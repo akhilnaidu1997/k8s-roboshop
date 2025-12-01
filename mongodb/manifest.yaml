@@ -24,7 +24,7 @@ spec:
       containers:
       - name: mongodb
         image: akhilln/mongodb:v1
-        imagePullPolicy: always
+        imagePullPolicy: Always
         ports:
         - containerPort: 27017
 ---

@@ -27,7 +27,13 @@ metadata:
     tier: backend
   namespace: roboshop
 spec:
-  replicas: 1
+  replicas: 2
+  strategy:
+   type: RollingUpdate
+   rollingUpdate:
+     maxSurge: 1
+     maxUnavailable: 1
+  minReadySeconds: 30
   selector:
     matchLabels:
       Project: roboshop
@@ -49,6 +55,20 @@ spec:
         envFrom:
         - configMapRef:
             name: payment
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 10
+          failureThreshold: 3
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 20
+          failureThreshold: 3
+          periodSeconds: 10
 ---
 apiVersion: v1 
 kind: Service

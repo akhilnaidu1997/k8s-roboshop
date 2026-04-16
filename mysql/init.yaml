@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  labels:
+    Project: roboshop
+    component: mysql
+    tier: db 
+  namespace: roboshop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      Project: roboshop
+      component: mysql
+      tier: db
+  template:
+    metadata:
+      labels:
+        Project: roboshop
+        component: mysql
+        tier: db
+    spec:
+      initContainers:
+      - name: init-containers
+        image: amazon/aws 
+        command:
+        - sh 
+        - -c 
+        - | 
+          aws secretsmanager get-secret-value \
+          --secret-id my-db-secret \
+          --query SecretString \
+          --output text > /etc/secrets/db-secret.json
+        volumeMounts:
+        - name: secrets-vol
+          mountPath: /etc/secrets
+      containers:
+      - name: mysql
+        image: akhilln/mysql:v1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3306
+        readinessProbe:
+          tcpSocket:
+            port: 3306
+          initialDelaySeconds: 20
+          periodSeconds: 10
+          failureThreshold: 3
+        livenessProbe:
+          tcpSocket:
+            port: 3306
+          initialDelaySeconds: 40
+          periodSeconds: 10
+          failureThreshold: 3
+        volumeMounts:
+        - name: secrets-vol
+          mountPath: /etc/secrets
+      volumes:
+      - name: secrets-vol
+        emptyDir: {}
+      
